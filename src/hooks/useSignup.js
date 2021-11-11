@@ -1,4 +1,4 @@
-import { auth, storage } from "../firebase/config.js";
+import { auth, storage } from "../firbase/config";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "./useAuthContext";
 
@@ -8,7 +8,7 @@ const useSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { dispatch } = useAuthContext();
 
-  const signup = async (email, password, displayName, thumbnail) => {
+  const signup = async (displayName, email, password, thumbnail) => {
     // remove previous error
     setError(null);
     setIsLoading(true);
@@ -27,7 +27,7 @@ const useSignup = () => {
       // create thumbnail storage
       const uploadPath = `thumbnails/${response.user.uid}/${thumbnail.name}`;
       const img = await storage.ref(uploadPath).put(thumbnail);
-      const imgUrl = await img.ref.getDownloadUrl();
+      const imgUrl = await img.ref.getDownloadURL();
 
       // add display name to user
       await response.user.updateProfile({ displayName, photoURL: imgUrl });
