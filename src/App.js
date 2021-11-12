@@ -1,5 +1,4 @@
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { firestore } from "./firbase/config";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import "./App.css";
 
@@ -11,36 +10,42 @@ import CreateProject from "./pages/project/CreateProject";
 import ProjectDetail from "./pages/project/ProjectDetail";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import AuthContextProvider from "./contexts/AuthContext";
+import { useAuthContext } from "./hooks/useAuthContext";
 
 function App() {
+  const { user, authIsReady } = useAuthContext();
   return (
     <div className="App">
-      <AuthContextProvider>
+      {authIsReady && (
         <BrowserRouter>
           <Sidebar />
           <div className="container">
             <Navbar />
             <Switch>
               <Route exact path="/">
-                <Dashboard />
+                {!user && <Redirect to="/login" />}
+                {user && <Dashboard />}
               </Route>
               <Route path="/login">
-                <Login />
+                {user && <Redirect to="/" />}
+                {!user && <Login />}
               </Route>
               <Route path="/signup">
-                <Signup />
+                {user && <Redirect to="/" />}
+                {!user && <Signup />}
               </Route>
               <Route path="/project:id">
-                <ProjectDetail />
+                {!user && <Redirect to="/login" />}
+                {user && <ProjectDetail />}
               </Route>
               <Route path="/create">
-                <CreateProject />
+                {!user && <Redirect to="/login" />}
+                {user && <CreateProject />}
               </Route>
             </Switch>
           </div>
         </BrowserRouter>
-      </AuthContextProvider>
+      )}
     </div>
   );
 }
