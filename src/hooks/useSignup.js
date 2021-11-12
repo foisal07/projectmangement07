@@ -1,4 +1,4 @@
-import { auth, storage } from "../firbase/config";
+import { auth, firestore, storage } from "../firbase/config";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "./useAuthContext";
 
@@ -29,8 +29,15 @@ const useSignup = () => {
       const img = await storage.ref(uploadPath).put(thumbnail);
       const imgUrl = await img.ref.getDownloadURL();
 
-      // add display name to user
+      // update user with display name, image
       await response.user.updateProfile({ displayName, photoURL: imgUrl });
+
+      // create user data for displaying online status
+      await firestore.collection("users").doc(response.user.uid).set({
+        online: true,
+        displayName,
+        photoURL: imgUrl,
+      });
 
       // dispatch action to login the user
       dispatch({ type: "LOGIN", payload: response.user });
