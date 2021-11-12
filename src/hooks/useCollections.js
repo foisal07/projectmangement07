@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { firestore } from "../firebase/config";
+import { firestore } from "../firbase/config";
 import { useRef } from "react";
 
 export default function useCollections(collection, _query, _orderBy) {

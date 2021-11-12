@@ -1,4 +1,4 @@
-import { auth } from "../firbase/config";
+import { auth, firestore } from "../firbase/config";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "./useAuthContext";
 
@@ -15,6 +15,10 @@ const useLogout = () => {
     setIsLoading(true);
 
     try {
+      // Update online status
+      const { uid } = auth.currentUser;
+      await firestore.collection("users").doc(uid).update({ online: false });
+
       // Logout
       await auth.signOut();
 
