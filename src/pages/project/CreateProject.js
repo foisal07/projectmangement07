@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import useCollections from "../../hooks/useCollections";
 
+// styles
+import "./CreateProject.css";
+
 const categories = [
   { value: "development", label: "Development" },
   { value: "design", label: "Design" },
@@ -19,25 +22,46 @@ export default function CreateProjects() {
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
   const [assignedUsers, setAssignedUsers] = useState([]);
+  const [formError, setFormError] = useState(null);
 
   useEffect(() => {
-    const userOptions = documents.map((user) => {
-      return {
-        value: user,
-        label: user.displayName,
-      };
-    });
-
-    setUsers(userOptions);
+    if (documents) {
+      const userOptions = documents.map((user) => {
+        return {
+          value: user,
+          label: user.displayName,
+        };
+      });
+      setUsers(userOptions);
+    }
   }, [documents]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(assignedUsers, documents, name, details, dueDate, category.value);
+    setFormError(null);
+
+    if (!category) {
+      setFormError("Please select a proejct category");
+      return;
+    }
+
+    if (assignedUsers.length < 1) {
+      setFormError("Please assign user to the project");
+      return;
+    }
+
+    console.log(
+      assignedUsers,
+      documents,
+      name,
+      details,
+      dueDate,
+      category.value
+    );
   };
 
   return (
-    <form>
+    <form className="create-project" onSubmit={handleSubmit}>
       <h2>Create a project</h2>
       <label>
         <span>Title:</span>
@@ -51,12 +75,12 @@ export default function CreateProjects() {
 
       <label>
         <span>Details:</span>
-        <input
+        <textarea
           required
           type="text"
           onChange={(e) => setDetails(e.target.value)}
           value={details}
-        />
+        ></textarea>
       </label>
 
       <label>
@@ -87,9 +111,8 @@ export default function CreateProjects() {
           isMulti
         />
       </label>
-      <button className="btn" onClick={handleSubmit}>
-        Add Project
-      </button>
+      <button className="btn">Add Project</button>
+      {formError && <p className="error">{formError}</p>}
     </form>
   );
 }
