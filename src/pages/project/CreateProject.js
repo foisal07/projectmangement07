@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import useCollections from "../../hooks/useCollections";
 
 const categories = [
   { value: "development", label: "Development" },
@@ -9,20 +10,35 @@ const categories = [
 ];
 
 export default function CreateProjects() {
+  const { documents } = useCollections("users");
+  const [users, setUsers] = useState([]);
+
+  // form fields
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
   const [assignedUsers, setAssignedUsers] = useState([]);
 
+  useEffect(() => {
+    const userOptions = documents.map((user) => {
+      return {
+        value: user,
+        label: user.displayName,
+      };
+    });
+
+    setUsers(userOptions);
+  }, [documents]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(name, details, dueDate, category.value);
+    console.log(assignedUsers, documents, name, details, dueDate, category.value);
   };
 
   return (
     <form>
-      <h2>Add project</h2>
+      <h2>Create a project</h2>
       <label>
         <span>Title:</span>
         <input
@@ -56,21 +72,24 @@ export default function CreateProjects() {
       <label>
         <span>Pick category:</span>
         <Select
-          onChange={(option) => setCategory(option)}
+          required
           options={categories}
+          onChange={(option) => setCategory(option)}
         />
       </label>
 
-      {/* <label>
+      <label>
         <span>Assign to:</span>
-        <input
+        <Select
           required
-          type="text"
-          onChange={(e) => setAssignedUsers(e.target.value)}
-          value={assignedUsers}
+          options={users}
+          onChange={(option) => setAssignedUsers(option)}
+          isMulti
         />
-      </label> */}
-      <button className="btn" onClick={handleSubmit}>Add Project</button>
+      </label>
+      <button className="btn" onClick={handleSubmit}>
+        Add Project
+      </button>
     </form>
   );
 }
