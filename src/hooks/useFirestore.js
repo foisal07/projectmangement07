@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useReducer } from "react";
-import { firestore, timestamp } from "../firebase/config";
+import { firestore, timestamp } from "../firbase/config";
 
 const initialState = {
   document: null,

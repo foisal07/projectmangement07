@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import useCollections from "../../hooks/useCollections";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import useFirestore from "../../hooks/useFirestore";
+import { useHistory } from "react-router";
 
 // styles
 import "./CreateProject.css";
+import { firestore, timestamp } from "../../firbase/config";
 
 const categories = [
   { value: "development", label: "Development" },
@@ -15,9 +19,12 @@ const categories = [
 export default function CreateProjects() {
   const { documents } = useCollections("users");
   const [users, setUsers] = useState([]);
+  const { user } = useAuthContext();
+  const { addDocument, response } = useFirestore("projects");
+  const history = useHistory();
 
   // form fields
-  const [name, setName] = useState("");
+  const [projectName, setProjectName] = useState("");
   const [details, setDetails] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [category, setCategory] = useState("");
@@ -36,7 +43,7 @@ export default function CreateProjects() {
     }
   }, [documents]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError(null);
 
@@ -50,14 +57,35 @@ export default function CreateProjects() {
       return;
     }
 
-    console.log(
-      assignedUsers,
-      documents,
-      name,
+    const createdBy = {
+      name: user.displayName,
+      photoURL: user.photoURL,
+      id: user.uid,
+    };
+
+    const assignedUsersList = assignedUsers.map((user) => {
+      return {
+        name: user.label,
+        photoURL: user.value.photoURL,
+        id: user.value.id,
+      };
+    });
+
+    const project = {
+      createdBy,
+      assignedUsersList,
+      projectName,
       details,
-      dueDate,
-      category.value
-    );
+      category: category.value,
+      dueDate: timestamp.fromDate(new Date(dueDate)),
+      comments: [],
+    };
+
+    await addDocument(project);
+    if (!response.error) {
+      history.push("/");
+    }
+    console.log(project);
   };
 
   return (
@@ -68,8 +96,8 @@ export default function CreateProjects() {
         <input
           required
           type="text"
-          onChange={(e) => setName(e.target.value)}
-          value={name}
+          onChange={(e) => setProjectName(e.target.value)}
+          value={projectName}
         />
       </label>
 
