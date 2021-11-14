@@ -32,10 +32,10 @@ function App() {
                 {!user && <Login />}
               </Route>
               <Route path="/signup">
-                {user && <Redirect to="/" />}
+                {user && user.displayName && <Redirect to="/" />}
                 {!user && <Signup />}
               </Route>
-              <Route path="/project:id">
+              <Route path="/projects/:id">
                 {!user && <Redirect to="/login" />}
                 {user && <ProjectDetail />}
               </Route>
