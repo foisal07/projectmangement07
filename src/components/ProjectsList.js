@@ -5,10 +5,12 @@ import Avatar from "./Avatar";
 // styles
 import "./ProjectsList.css";
 
-export default function ProjectsList({ projects }) {
+export default function ProjectsList({ projects, isLoading }) {
+  console.log(isLoading);
   return (
     <div className="project-list">
-      {projects.length === 0 && <p>No projects created yet!</p>}
+      {isLoading && <p className='loading'>Loading...</p>}
+      {!isLoading && projects.length === 0 && <p>No projects created yet!</p>}
       {projects.map((project) => {
         return (
           <Link to={`/projects/${project.id}`} key={project.id}>
