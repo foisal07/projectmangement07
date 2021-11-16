@@ -2,6 +2,7 @@ import React from "react";
 import { useDocument } from "../../hooks/useDocument";
 import { useParams } from "react-router";
 import ProjectSummary from "./ProjectSummary";
+import './ProjectDetail.css'
 import Comment from "./Comment";
 
 export default function ProjectDetail() {

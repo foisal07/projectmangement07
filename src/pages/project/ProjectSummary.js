@@ -17,7 +17,7 @@ export default function ProjectSummary({ project }) {
   };
 
   return (
-    <>
+    <div>
       <div className="project-summary">
         <h2 className="page-title">{project.projectName}</h2>
         <p>By: {project.createdBy.name}</p>
@@ -39,6 +39,6 @@ export default function ProjectSummary({ project }) {
           Mark as complete
         </button>
       )}
-    </>
+    </div>
   );
 }
