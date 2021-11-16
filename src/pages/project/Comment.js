@@ -2,13 +2,14 @@ import { useState } from "react";
 import { timestamp } from "../../firbase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import useFirestore from "../../hooks/useFirestore";
+import Avatar from "../../components/Avatar";
 
 import "./Comment.css";
 
 export default function Comment({ project }) {
   const [newComment, setNewComment] = useState("");
   const { user } = useAuthContext();
-  const { updatedDocument, response } = useFirestore();
+  const { updatedDocument, response } = useFirestore("projects");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function Comment({ project }) {
     };
 
     await updatedDocument(
-      { comments: [...project.cpmments, commentToAdd] },
+      { comments: [...project.comments, commentToAdd] },
       project.id
     );
 
@@ -34,8 +35,24 @@ export default function Comment({ project }) {
   return (
     <div className="project-comments">
       <h4>Project comment</h4>
+      <ul>
+        {project.comments.length > 0 &&
+          project.comments.map((comment) => (
+            <li key={comment.id}>
+              <div className="comment-author">
+                <Avatar src={comment.photoURL} />
+                <p>{comment.displayName}</p>
+              </div>
+              <div className="comment-date">
+                <p>date here</p>
+              </div>
+              <div className="comment-content">
+                <p>{comment.comment}</p>
+              </div>
+            </li>
+          ))}
+      </ul>
       <form className="add-comment" onSubmit={handleSubmit}>
-        <span>Add comment</span>
         <label>
           <textarea
             required
