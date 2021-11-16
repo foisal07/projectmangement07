@@ -15,7 +15,7 @@ export default function ProjectDetail() {
       {error && <p className="error">{error}</p>}
       {!document && <p className="loading">Loading...</p>}
       {document && <ProjectSummary project={document} />}
-      {document && <Comment />}
+      {document && <Comment project ={document}/>}
     </div>
   );
 }

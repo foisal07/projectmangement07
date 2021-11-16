@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { timestamp } from "../../firbase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import useFirestore from "../../hooks/useFirestore";
+
 import "./Comment.css";
 
-export default function Comment() {
+export default function Comment({ project }) {
   const [newComment, setNewComment] = useState("");
   const { user } = useAuthContext();
+  const { updatedDocument, response } = useFirestore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const commentToAdd = {
@@ -18,7 +21,14 @@ export default function Comment() {
       id: Math.random(),
     };
 
-    console.log(commentToAdd);
+    await updatedDocument(
+      { comments: [...project.cpmments, commentToAdd] },
+      project.id
+    );
+
+    if (!response.error) {
+      setNewComment("");
+    }
   };
 
   return (

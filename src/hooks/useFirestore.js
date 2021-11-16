@@ -32,9 +32,18 @@ const firestoreReducer = (state, action) => {
     };
   }
 
-  if (action.type === "ADD_DOCUMENT") {
+  if (action.type === "DELETE_DOCUMENT") {
     return {
       document: null,
+      isLoading: false,
+      error: action.payload,
+      success: true,
+    };
+  }
+
+  if (action.type === "UPDATE_DOCUMENT") {
+    return {
+      document: action.payload,
       isLoading: false,
       error: action.payload,
       success: true,
@@ -73,6 +82,7 @@ export default function useFirestore(collectionName) {
   // delete a collection from firestore
   const deleteDocument = async (id) => {
     dispatch({ type: "IS_LOADING" });
+
     try {
       await collectionRef.doc(id).delete();
       dispatchIfNotCancelled({ type: "DELETE_DOCUMENT" });
@@ -81,5 +91,22 @@ export default function useFirestore(collectionName) {
     }
   };
 
-  return { addDocument, deleteDocument, response };
+  const updatedDocument = async (updates, id) => {
+    dispatch({ type: "IS_LOADING" });
+
+    try {
+      const updatedDocument = await collectionRef.doc(id).update(updates);
+      
+      dispatchIfNotCancelled({
+        type: "UPDATE_DOCUMENT",
+        payload: updatedDocument,
+      });
+      return updatedDocument;
+    } catch (err) {
+      dispatchIfNotCancelled({ type: "ERROR", payload: err });
+      return null;
+    }
+  };
+
+  return { addDocument, deleteDocument, updatedDocument, response };
 }
