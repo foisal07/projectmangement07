@@ -1,12 +1,14 @@
 import React from "react";
 import Avatar from "../../components/Avatar";
 import useFirestore from "../../hooks/useFirestore";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { useHistory } from "react-router";
 
 import "./ProjectSummary.css";
 
 export default function ProjectSummary({ project }) {
   const history = useHistory();
+  const { user } = useAuthContext();
 
   const { deleteDocument } = useFirestore("projects");
   const handleComplete = () => {
@@ -18,6 +20,7 @@ export default function ProjectSummary({ project }) {
     <>
       <div className="project-summary">
         <h2 className="page-title">{project.projectName}</h2>
+        <p>By: {project.createdBy.name}</p>
         <p className="due-date">
           Project due by {project.dueDate.toDate().toDateString()}
         </p>
@@ -31,9 +34,11 @@ export default function ProjectSummary({ project }) {
           ))}
         </div>
       </div>
-      <button className="btn" onClick={handleComplete}>
-        Mark as complete
-      </button>
+      {user.uid === project.createdBy.id && (
+        <button className="btn" onClick={handleComplete}>
+          Mark as complete
+        </button>
+      )}
     </>
   );
 }
