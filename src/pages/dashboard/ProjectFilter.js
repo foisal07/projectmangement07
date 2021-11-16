@@ -1,15 +1,15 @@
 import "./Dashboard.css";
-const filters = ["all", "mine", "design", "development", "sales", "aarketing"];
+const filters = ["all", "mine", "design", "development", "sales", "marketing"];
 
-export default function ProjectFilter({ currentFilter, changeFilter }) {
+export default function ProjectFilter({ currentFilter, changeFilter, key }) {
   const handleClick = (newFilter) => {
     changeFilter(newFilter);
   };
 
   return (
-    <div className="project-filter">
+    <div className="project-filter" key={key}>
       <nav>
-        <p>Filter by</p>
+        <p>Filter by:</p>
         {filters.map((filter) => {
           return (
             <button

@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 import "./ProjectsList.css";
 
 export default function ProjectsList({ projects, isLoading }) {
-  console.log(isLoading);
+  
   return (
     <div className="project-list">
       {isLoading && <p className='loading'>Loading...</p>}
