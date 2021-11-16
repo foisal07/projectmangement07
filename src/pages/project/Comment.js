@@ -54,6 +54,7 @@ export default function Comment({ project }) {
       </ul>
       <form className="add-comment" onSubmit={handleSubmit}>
         <label>
+          <span>Add new comment:</span>
           <textarea
             required
             onChange={(e) => setNewComment(e.target.value)}
