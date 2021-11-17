@@ -3,6 +3,7 @@ import { timestamp } from "../../firbase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import useFirestore from "../../hooks/useFirestore";
 import Avatar from "../../components/Avatar";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 import "./Comment.css";
 
@@ -44,7 +45,11 @@ export default function Comment({ project }) {
                 <p>{comment.displayName}</p>
               </div>
               <div className="comment-date">
-                <p>date here</p>
+                <p>
+                  {formatDistanceToNow(comment.createdAt.toDate(), {
+                    addSuffix: true,
+                  })}
+                </p>
               </div>
               <div className="comment-content">
                 <p>{comment.comment}</p>
