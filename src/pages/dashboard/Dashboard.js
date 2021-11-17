@@ -13,13 +13,27 @@ export default function Dashboard() {
     setCurrentFilter(newFilter);
   };
 
+  console.log(documents);
+
   const projects = documents.filter((project) => {
     if (currentFilter === "all") {
-      return project;
+      return true;
+    }
+
+    if (currentFilter === "mine") {
+      let assignedToMe = false;
+
+      project.assignedUsersList.forEach((u) => {
+        if (u.id === user.uid) {
+          assignedToMe = true;
+        }
+      });
+
+      return assignedToMe;
     }
 
     if (project.category === currentFilter) {
-      return project;
+      return true;
     }
   });
 
